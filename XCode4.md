@@ -44,4 +44,58 @@
   
 @end
 
+
+### 主题
+  目录:
+
+    mkdir -p ~/Library/Developer/Xcode/UserData/FontAndColorThemes/
+    cd ~/Library/Developer/Xcode/UserData/FontAndColorThemes/
+
+### 主题文件
+  *.dvtcolortheme
+
+### 编译
+  跳过警告
+
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    - (void) methodUsingDeprecatedStuff {
+        //use deprecated stuff
+    }
+    #pragma clang diagnostic pop 
+
+### Debug
+  工程Edit Scheme，添加环境变量`NSZombieEnabled`=YES（`MallocStackLogging`=YES）
+  * `NSZombieEnabled`: 僵尸Debug，当对已释放的指针变量访问时，会打印该变量地址；
+  * `MallocStackLogging`: 打印该地址的内存变化函数调用栈（具体打印方法`malloc_history <pid> <address>`）
+
+### Info.plist的Key定义
+  * UIRequiresPersistentWiFi 在程序中弹出wifi选择的key（系统设置中需要将wifi提示打开）
+  * UIAppFonts 内嵌字体（http://www.minroad.com/?p=412 有详细介绍）
+  * UIApplicationExitsOnSuspend 程序是否在后台运行，自己在进入后台的时候exit(0)是很傻的办法
+  * UIBackgroundModes 后台运行时的服务，具体看iOS4的后台介绍
+  * UIDeviceFamily array类型（1为iPhone和iPod touch设备，2为iPad)
+  * UIFileSharingEnabled 开启itunes共享document文件夹
+  * UILaunchImageFile 相当于Default.png（更名而已）
+  * UIPrerenderedIcon icon上是否有高光
+  * UIRequiredDeviceCapabilities 设备需要的功能（具体点击这里查看）
+  * UIStatusBarHidden 状态栏隐藏（和程序内的区别是在于显示Default.png已经生效）
+  * UIStatusBarStyle 状态栏类型
+  * UIViewEdgeAntialiasing 是否开启抗锯齿
+  * CFBundleDisplayName app显示名
+  * CFBundleIconFile、CFBundleIconFiles 图标
+  * CFBundleName 与CFBundleDisplayName的区别在于这个是短名，16字符之内
+  * CFBundleVersion 版本
+  * CFBundleURLTypes 自定义url，用于利用url弹回程序
+  * CFBundleLocalizations 本地资源的本地化语言，用于itunes页面左下角显示本地话语种
+  * CFBundleDevelopmentRegion 也是本地化相关，如果用户所在地没有相应的语言资源，则用这个key的value来作为默认
+
+@end
+
+
+
  
+
+
+
+
