@@ -76,9 +76,6 @@
 
     xcodebuild -showsdks
 
-
-
-
   
     typedef enum {
        UILineBreakModeWordWrap = 0,        以单词为单位换行，以单位为单位截断。
@@ -123,14 +120,5 @@
     
     - (void)setAttributedTitle:(NSAttributedString *)title forState:(UIControlState)stateNS_AVAILABLE_IOS(6_0);// default is nil. title is assumed to be single line
     
-    
-    
-    
-
- 
-
-
-
-
 
 @end
