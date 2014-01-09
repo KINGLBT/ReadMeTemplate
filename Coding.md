@@ -67,6 +67,61 @@
     }
     @end
 
+### Keep initialize and load Implementations Lean
 
+  `+ (void)load;`
+  Invoked whenever a class or category is added to the Objective-C runtime; implement this method to perform class-specific behavior upon loading.
+  `+ (void)initialize;`
+  Initializes the receiver before it’s used (before it receives its first message).
+  
+### Use Toll-Free Bridging for Collections with Custom Memory-Management Semantics
+
+    // No-ops for non-retaining objects.
+    static const void* EOCRetainNoOp(CFAllocatorRef allocator, const void *value) { return value; }
+    static void EOCReleaseNoOp(CFAllocatorRef allocator, const void *value) { }
+    
+    NSMutableArray* EOCNonRetainArray(){
+        CFArrayCallBacks callbacks = kCFTypeArrayCallBacks;
+        callbacks.retain = EOCRetainNoOp;
+        callbacks.release = EOCReleaseNoOp;
+        return (NSMutableArray *)CFArrayCreateMutable(nil, 0, &callbacks);
+    }
+    
+    
+    NSMutableDictionary* EOCNonRetainDictionary(){
+        CFDictionaryKeyCallBacks keyCallbacks = kCFTypeDictionaryKeyCallBacks;
+        CFDictionaryValueCallBacks callbacks = kCFTypeDictionaryValueCallBacks;
+        callbacks.retain = EOCRetainNoOp;
+        callbacks.release = EOCReleaseNoOp;
+        return (NSMutableDictionary *)CFDictionaryCreateMutable(nil, 0, &keyCallbacks, &callbacks);
+    }
+
+### Prefer Block Enumeration to for Loops
+
+    // Block enumeration
+    NSArray *anArray = /* … */;
+    [anArray enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop){
+        // Do something with `object’
+        if (shouldStop) {
+            *stop = YES;
+        }
+    }];
+    
+    NSDictionary *aDictionary = /* … */;
+    [aDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id object, NSUInteger idx, BOOL *stop){
+        // Do something with `key’ and `object’
+        if (shouldStop) {
+            *stop = YES;
+        }
+    }];
+    
+    NSSet *aSet = /* … */;
+    [aSet enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop){
+        // Do something with `object’
+        if (shouldStop) {
+            *stop = YES;
+        }
+    }];
+    
 
 @end
