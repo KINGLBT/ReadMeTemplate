@@ -176,5 +176,76 @@
 　一个要注意的地方是，`dispatch queue`的挂起是`block`粒度的。换句话说，挂起一个queue并不会将当前正在执行的`block`挂起。它会允许当前执行的`block`执行完毕，然后后续的`block`不再会被执行，直至queue被恢复。
 　还有一个注意点：从man页上得来的：如果你挂起了一个queue或者source，那么销毁它之前，必须先对其进行恢复。
 
+### 不要阻塞太多后台线程
+
+  如果我们要在后台线程中请求一系列的数据，然后将它们显示到界面上，你可能写出下面的代码：
+  
+    //Main Thread
+    dispatch_queue_t queue;
+    queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    for (NSURL *url in [self.imageStore URLs]) {
+        dispatch_async(queue, ^{
+            NSData *data = [NSData dataWithContentsOfURL:url];
+    
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.imageStore setImageData:data forURL:url];
+            });
+        });
+    }
+
+  这段代码肯定是有问题的，因为获取数据`NSData *data = [NSData dataWithContentsOfURL:url];`是同步的，台线程被这段代码阻塞调，系统会自动创建新的线程去执行下一个循环，最终结果会是获取多少次数据将创建了多少个后台线程。而创建线程本身是有成本的，所以如果创建太多的后台线程会占用大量的系统资源，这时应该用dispatch I/O来解决：
+
+    //Main Thread
+    for (NSURL *url in [self.imageStore URLs]) {
+        dispatch_io_t io = dispatch_io_create_with_path(DISPATCH_IO_RANDOM, [[url path] fileSystemRepresentation], 0_RDONLY, 0, NULL, NULL);
+        dispatch_io_set_low_water(io, SIZE_MAX);
+    
+        dispatch_io_read(io, 0, SIZE_MAX, dispatch_get_main_queue(), ^(bool done, dispatch_data_t data, int error) {
+            [self.imageStore setImageData:data forURL:url];
+        });
+    }
+
+### 通过读写访问提升效率
+  
+  我们在设计读写时通常允许并发同步的的读(read)，串行异步的写(write)，并且读写不能同时进行。
+  
+    self.concurrentQuene = dispatch_queue_create("com.example.current", DISPATCH_QUEUE_CONCURRENT);
+
+    - (id)objectAtIndex:(NSUInteger)index {
+        __block id obj;
+        dispatch_sync(self.concurrentQueue, ^{
+           obj = [self.array objectAtIndex:index];
+        });
+        return obj;
+    }
+    
+    - (void)insertObject:(id)obj atIndex:(NSUInteger)index {
+        dispatch_barrier_async(self.concurrentQueue, ^{
+            [self.array insertObject:obj atIndex:index];
+        });
+    }
+
+### 异步的更新状态
+
+  有时候我们先知道队列中操作执行的进度，并通过状态显示出来，如通过progress view显示当前图片渲染的进度，我们可以使用GCD的dispatch source。
+  
+    //先设置接受到数据的处理（类似监听）
+    self.source = dispatch_source_create(DISPATCH_SOURCE_TYPE_ADD, 0, 0, dispatch_get_main_queue());
+    
+    dispatch_source_set_event_handler(self.source, ^{
+        self.progress += dispatch_source_get_data(self.source);
+        [self.progressView setProgress:(self.progress/self.total) animated:YES];
+    });
+    dispatch_resume(self.source);
+    //在渲染的时候将数据传递给dispatch source
+    dispatch_async(self.renderQueue, ^{
+        //...
+        dispatch_source_merge_data(self.source, 1);
+    });
+    //可以取消掉dispatch source的处理
+    dispatch_source_cancel(self.source);
+    
+
+
 @end
   
