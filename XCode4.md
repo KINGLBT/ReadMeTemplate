@@ -90,6 +90,11 @@
   * CFBundleLocalizations 本地资源的本地化语言，用于itunes页面左下角显示本地话语种
   * CFBundleDevelopmentRegion 也是本地化相关，如果用户所在地没有相应的语言资源，则用这个key的value来作为默认
 
+### arm版本列表
+  * armv6：iPhone 2G/3G，iPod 1G/2G
+  * armv7：iPhone 3GS/4/4s，iPod 3G/4G，iPad 1G/2G/3G
+  * armv7s：iPhone5
+
 @end
 
 
