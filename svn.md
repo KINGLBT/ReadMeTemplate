@@ -5,3 +5,4 @@
     创建SVN目录 svnadmin create /Users/larry/Repositories 
     批量添加文件 svn st |grep ? |awk '{print $2}' |xargs svn add
 
+@end
