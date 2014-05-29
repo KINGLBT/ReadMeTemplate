@@ -14,7 +14,7 @@
 
   最后，我们需要在钥匙串中搜索需要的内容。密钥有很多个部分可用来搜索，但最好的办法是将自己的标识符赋给它，然后搜索。通用密码条目都包含属性`kSecAttrGeneric`，可以用它来存储标识符。
   
-  钥匙串中的条目都有几个可搜索的**属性**和一个加密过的**值**。对于通用密码条目，比较重要的属性有账户`kSecAttrAccount`、服务`kSecAttrService`和标识符`kSecAttrGeneric`。而值通常是密码。
+  钥匙串中的条目都有几个可搜索的**属性**和一个加密过的**值**。对于通用密码条目，比较重要的属性有账户`kSecAttrAccount`、服务`kSecAttrService`、标识符`kSecAttrGeneric`、访问属性`kSecAttrAccessible`。而值通常是密码。
   
   * 1.kSecClass key 定义属于那一种类型的keyChain
   * 2.不同的类型包含不同的Attributes,这些attributes定义了这个item的具体信息
