@@ -19,6 +19,7 @@
   * 1.kSecClass key 定义属于那一种类型的keyChain
   * 2.不同的类型包含不同的Attributes,这些attributes定义了这个item的具体信息
   * 3.每个item可以包含一个密码项来存储对应的密码
+  * 区别(标识)一个item要用`kSecAttrAccount`和`kSecAttrService`
   
 ### SecItem 操作
 
