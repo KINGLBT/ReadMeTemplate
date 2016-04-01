@@ -4,7 +4,6 @@
     
     TCWebCodesSDK.framework:包含TCWebCodesSDK.framework
     TCWebCodesSDKDemo:⽰示例⼯工程,演⽰示了如何使⽤用TCWebCodesSDK.framework
-    index API文档
     
   本SDK运行环境与项目要求:
     
