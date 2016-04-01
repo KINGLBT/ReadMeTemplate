@@ -13,13 +13,12 @@
 ### 2.接口说明
     
     /**
-    开始加载H5
+    加载验证码H5，并且返回webView控件
     @param url，腾讯云返回的验证码URL
     @param frame, webView控件大小
-    @param callback, 回调, 成功/失败可以通过 resultJSON[@"ret"] 判断，0为成功，非0为失败
-    @return 返回H5的webView控件
-    @note 该函数用于开始加载，并且返回H5的webView控件，用于显示
-    @warning 请不要设置返回webView控件的回调
+    @param callback, H5验证码验证结果回调, 成功/失败可以通过 resultJSON[@"ret"] 判断，0为成功，非0为失败
+    @return webView控件，用于显示
+    @warning 由于内部需要webView判断跳转, 请不要设置返回webView控件的delegate
     */
     - (UIWebView*)startLoad:(NSString*)url webFrame:(CGRect)frame callback:(void (^)(NSDictionary *resultJSON, UIWebView *webView))callback;
     
@@ -35,7 +34,7 @@
   
   
     /**
-    设置是否显示H5的返回头部
+    设置是否显示H5的内部导航头部
     */
     @property (nonatomic) BOOL showHeader;
     
